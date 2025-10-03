@@ -4,15 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>База знаний - Документы компании</title>
-    <meta name="description" content="Telegram Mini App для хранения, поиска и скачивания обучающих документов компании">
-    <meta name="author" content="Company Knowledge Base">
-    <meta property="og:title" content="База знаний - Документы компании">
-    <meta property="og:description" content="Приложение для управления корпоративными документами">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@lovable_dev">
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -176,6 +167,7 @@
             box-shadow: var(--shadow);
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
+            border: 1px solid var(--border-color);
         }
 
         .document-card:hover {
@@ -193,12 +185,14 @@
             justify-content: center;
             margin-bottom: 12px;
             color: var(--primary-color);
+            font-size: 20px;
         }
 
         .document-title {
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 16px;
+            line-height: 1.3;
         }
 
         .document-meta {
@@ -206,11 +200,23 @@
             justify-content: space-between;
             color: var(--text-light);
             font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .document-description {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .document-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             margin-top: 12px;
         }
 
@@ -224,6 +230,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 14px;
         }
 
         .btn-primary {
@@ -245,70 +252,29 @@
             background-color: rgba(0, 0, 0, 0.05);
         }
 
-        .document-detail {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--card-bg);
-            z-index: 100;
-            padding: 16px;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .document-detail.active {
-            transform: translateX(0);
-        }
-
-        .detail-header {
+        .stats-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
+            gap: 8px;
+            margin: 8px 0;
         }
 
-        .detail-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .close-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.05);
+        .stat {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            gap: 4px;
         }
 
-        .detail-content {
-            margin-bottom: 24px;
+        .download-stat {
+            background: #ffeaea;
+            color: #e74c3c;
         }
 
-        .detail-meta {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .detail-description {
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .detail-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
+        .share-stat {
+            background: #eafaf1;
+            color: #27ae60;
         }
 
         .loading {
@@ -316,6 +282,8 @@
             justify-content: center;
             align-items: center;
             padding: 40px 0;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .spinner {
@@ -339,6 +307,48 @@
             color: var(--text-light);
         }
 
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #e74c3c;
+            background: #ffeaea;
+            border-radius: var(--radius);
+            border: 1px solid #ffcdd2;
+        }
+
+        .refresh-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            width: 100%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .refresh-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+
         .notification {
             position: fixed;
             bottom: 20px;
@@ -351,63 +361,20 @@
             box-shadow: var(--shadow);
             transition: transform 0.3s ease;
             z-index: 1000;
+            max-width: 90%;
+            text-align: center;
         }
 
         .notification.show {
             transform: translateX(-50%) translateY(0);
         }
 
-        .stats-container {
-            display: flex;
-            gap: 12px;
-            margin: 10px 0;
-            flex-wrap: wrap;
+        .notification.error {
+            background-color: #e74c3c;
         }
 
-        .download-count {
-            color: #e74c3c;
-            font-weight: 500;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: #ffeaea;
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
-
-        .share-count {
-            color: #27ae60;
-            font-weight: 500;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: #eafaf1;
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
-
-        .refresh-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            width: 100%;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .refresh-btn:hover {
-            background: var(--primary-dark);
+        .notification.success {
+            background-color: #27ae60;
         }
 
         @media (max-width: 480px) {
@@ -415,8 +382,14 @@
                 grid-template-columns: 1fr;
             }
             
-            .detail-actions {
+            .document-actions {
                 flex-direction: column;
+                gap: 8px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
             
             .app-container {
@@ -432,7 +405,7 @@
                 <div class="logo-icon">KB</div>
                 <div class="logo-text">База знаний</div>
             </div>
-            <div class="user-avatar" id="userAvatar">ИИ</div>
+            <div class="user-avatar" id="userAvatar">U</div>
         </div>
 
         <div class="search-container">
@@ -446,7 +419,7 @@
             <div class="category" data-category="other">Другие</div>
         </div>
 
-        <button class="refresh-btn" onclick="loadFiles()">
+        <button class="refresh-btn" id="refreshBtn" onclick="loadFiles()">
             🔄 Обновить список документов
         </button>
 
@@ -455,44 +428,8 @@
             <div class="documents-grid" id="documentsGrid">
                 <div class="loading">
                     <div class="spinner"></div>
+                    <div>Загрузка документов...</div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="document-detail" id="documentDetail">
-        <div class="detail-header">
-            <h2 class="detail-title" id="detailTitle">Название документа</h2>
-            <div class="close-btn" id="closeDetail">✕</div>
-        </div>
-        
-        <div class="detail-content">
-            <div class="detail-meta">
-                <span id="detailType">PDF</span>
-                <span id="detailSize">2.4 МБ</span>
-                <span id="detailDate">15.03.2024</span>
-            </div>
-            
-            <div class="detail-description" id="detailDescription">
-                Описание документа будет здесь...
-            </div>
-
-            <div class="stats-container">
-                <div class="download-count" id="detailDownloadCount">
-                    📥 Загружен: 0 раз
-                </div>
-                <div class="share-count" id="detailShareCount">
-                    📤 Отправлен: 0 раз
-                </div>
-            </div>
-            
-            <div class="detail-actions">
-                <button class="btn btn-primary" id="downloadBtn">
-                    <span>📥</span> Скачать документ
-                </button>
-                <button class="btn btn-outline" id="shareBtn">
-                    <span>↗️</span> Поделиться
-                </button>
             </div>
         </div>
     </div>
@@ -506,24 +443,53 @@
         let allDocuments = [];
         let downloadStats = {};
         let shareStats = {};
-        let currentDocument = null;
 
-        // Инициализация Telegram Web App
-        let tg = window.Telegram.WebApp;
-        
+        // Показать уведомление
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+            } else if (type === 'success') {
+                notification.classList.add('success');
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
         // Загрузка статистики из localStorage
         function loadStats() {
-            const savedDownloadStats = localStorage.getItem('documentDownloadStats');
-            const savedShareStats = localStorage.getItem('documentShareStats');
-            
-            if (savedDownloadStats) downloadStats = JSON.parse(savedDownloadStats);
-            if (savedShareStats) shareStats = JSON.parse(savedShareStats);
+            try {
+                const savedDownloadStats = localStorage.getItem('documentDownloadStats');
+                const savedShareStats = localStorage.getItem('documentShareStats');
+                
+                if (savedDownloadStats) {
+                    downloadStats = JSON.parse(savedDownloadStats);
+                }
+                if (savedShareStats) {
+                    shareStats = JSON.parse(savedShareStats);
+                }
+            } catch (e) {
+                console.error('Error loading stats:', e);
+                downloadStats = {};
+                shareStats = {};
+            }
         }
 
         // Сохранение статистики
         function saveStats() {
-            localStorage.setItem('documentDownloadStats', JSON.stringify(downloadStats));
-            localStorage.setItem('documentShareStats', JSON.stringify(shareStats));
+            try {
+                localStorage.setItem('documentDownloadStats', JSON.stringify(downloadStats));
+                localStorage.setItem('documentShareStats', JSON.stringify(shareStats));
+            } catch (e) {
+                console.error('Error saving stats:', e);
+            }
         }
 
         // Получение счетчиков
@@ -546,47 +512,120 @@
             saveStats();
         }
 
-        // Показать уведомление
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.backgroundColor = isError ? '#e74c3c' : var('--primary-color');
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
         // Загрузка файлов из file-list.json
         async function loadFiles() {
             const grid = document.getElementById('documentsGrid');
-            grid.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '🔄 Загрузка...';
+            
+            grid.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Загрузка документов...</div>
+                </div>
+            `;
             
             try {
-                // Загружаем file-list.json с GitHub
-                const response = await fetch('./file-list.json?t=' + Date.now());
+                // Пробуем разные пути к file-list.json
+                const possiblePaths = [
+                    './file-list.json',
+                    'file-list.json',
+                    '/file-list.json',
+                    'https://raw.githubusercontent.com/grafomancheg/hc-bot/main/file-list.json'
+                ];
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                let response;
+                let lastError;
+                
+                for (const path of possiblePaths) {
+                    try {
+                        console.log('Trying path:', path);
+                        response = await fetch(path + '?t=' + Date.now());
+                        if (response.ok) {
+                            console.log('Success with path:', path);
+                            break;
+                        }
+                    } catch (error) {
+                        lastError = error;
+                        console.log('Failed with path:', path, error);
+                    }
                 }
                 
-                allDocuments = await response.json();
+                if (!response || !response.ok) {
+                    throw new Error(`Не удалось загрузить file-list.json. Статус: ${response ? response.status : 'no response'}`);
+                }
+                
+                const data = await response.json();
+                
+                // Проверяем структуру данных
+                if (!Array.isArray(data)) {
+                    throw new Error('Некорректный формат file-list.json - ожидается массив');
+                }
+                
+                allDocuments = data;
                 renderDocuments();
+                showNotification(`Загружено ${data.length} документов`, 'success');
                 
             } catch (error) {
                 console.error('Ошибка загрузки документов:', error);
                 grid.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+                    <div class="error-state">
+                        <div class="icon">❌</div>
                         <h3>Ошибка загрузки</h3>
-                        <p>Не удалось загрузить список документов</p>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 10px; font-size: 12px; opacity: 0.7;">
+                            Проверьте наличие file-list.json в корневой папке
+                        </p>
                         <button class="btn btn-primary" onclick="loadFiles()" style="margin-top: 16px;">
                             🔄 Попробовать снова
                         </button>
                     </div>
                 `;
+                showNotification('Ошибка загрузки документов', 'error');
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Обновить список документов';
             }
+        }
+
+        // Получение типа файла
+        function getFileType(filename) {
+            if (!filename) return 'FILE';
+            const ext = filename.split('.').pop().toLowerCase();
+            const types = {
+                'pdf': 'PDF',
+                'docx': 'DOCX',
+                'doc': 'DOC',
+                'xlsx': 'XLSX',
+                'xls': 'XLS',
+                'pptx': 'PPTX',
+                'ppt': 'PPT',
+                'txt': 'TXT',
+                'zip': 'ZIP',
+                'rar': 'RAR'
+            };
+            return types[ext] || ext.toUpperCase();
+        }
+
+        // Получение иконки для типа файла
+        function getFileIcon(filename) {
+            if (!filename) return '📄';
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'pdf': '📋',
+                'docx': '📝',
+                'doc': '📝',
+                'xlsx': '📊',
+                'xls': '📊',
+                'pptx': '📈',
+                'ppt': '📈',
+                'txt': '📄',
+                'zip': '📦',
+                'rar': '📦'
+            };
+            return icons[ext] || '📄';
         }
 
         // Рендеринг документов
@@ -597,14 +636,20 @@
             
             // Фильтрация документов
             let filteredDocuments = allDocuments.filter(doc => {
+                if (!doc || !doc.name) return false;
+                
                 // Поиск
-                const matchesSearch = doc.name.toLowerCase().includes(searchTerm) || 
-                                    (doc.description && doc.description.toLowerCase().includes(searchTerm));
+                const nameMatch = doc.name.toLowerCase().includes(searchTerm);
+                const descMatch = doc.description && doc.description.toLowerCase().includes(searchTerm);
+                const matchesSearch = nameMatch || descMatch;
                 
                 // Категории
-                const matchesCategory = activeCategory === 'all' || 
-                                       (activeCategory === 'pdf' && doc.name.toLowerCase().endsWith('.pdf')) ||
-                                       (activeCategory === 'other' && !doc.name.toLowerCase().endsWith('.pdf'));
+                let matchesCategory = true;
+                if (activeCategory === 'pdf') {
+                    matchesCategory = doc.name.toLowerCase().endsWith('.pdf');
+                } else if (activeCategory === 'other') {
+                    matchesCategory = !doc.name.toLowerCase().endsWith('.pdf');
+                }
                 
                 return matchesSearch && matchesCategory;
             });
@@ -612,7 +657,7 @@
             if (filteredDocuments.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                        <div class="icon">🔍</div>
                         <h3>Документы не найдены</h3>
                         <p>Попробуйте изменить поисковый запрос или выбрать другую категорию</p>
                     </div>
@@ -625,148 +670,127 @@
             filteredDocuments.forEach(doc => {
                 const card = document.createElement('div');
                 card.className = 'document-card';
-                card.setAttribute('data-id', doc.url);
                 
-                // Определяем иконку по типу файла
-                let icon = '📄';
-                if (doc.name.toLowerCase().endsWith('.pdf')) icon = '📋';
-                if (doc.name.toLowerCase().endsWith('.xlsx') || doc.name.toLowerCase().endsWith('.xls')) icon = '📊';
-                if (doc.name.toLowerCase().endsWith('.docx') || doc.name.toLowerCase().endsWith('.doc')) icon = '📝';
-                if (doc.name.toLowerCase().endsWith('.pptx') || doc.name.toLowerCase().endsWith('.ppt')) icon = '📈';
+                const downloadCount = getDownloadCount(doc.url);
+                const shareCount = getShareCount(doc.url);
                 
                 card.innerHTML = `
-                    <div class="document-icon">${icon}</div>
-                    <h3 class="document-title">${doc.name}</h3>
+                    <div class="document-icon">${getFileIcon(doc.name)}</div>
+                    <h3 class="document-title">${doc.name || 'Без названия'}</h3>
                     <div class="document-meta">
                         <span>${getFileType(doc.name)}</span>
-                        <span>${doc.size}</span>
+                        <span>${doc.size || 'Неизвестно'}</span>
                     </div>
+                    ${doc.description ? `<div class="document-description">${doc.description}</div>` : ''}
                     <div class="stats-container">
-                        <div class="download-count">📥 ${getDownloadCount(doc.url)}</div>
-                        <div class="share-count">📤 ${getShareCount(doc.url)}</div>
+                        <div class="stat download-stat">📥 ${downloadCount}</div>
+                        <div class="stat share-stat">📤 ${shareCount}</div>
                     </div>
                     <div class="document-actions">
-                        <button class="btn btn-outline download-action">Скачать</button>
+                        <button class="btn btn-outline share-btn" data-url="${doc.url}" data-name="${doc.name}">
+                            📤 Отправить
+                        </button>
+                        <button class="btn btn-primary download-btn" data-url="${doc.url}" data-name="${doc.name}">
+                            📥 Скачать
+                        </button>
                     </div>
                 `;
                 
-                // Обработчики событий
-                card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('download-action')) {
-                        openDocumentDetail(doc);
-                    }
-                });
-                
-                const downloadBtn = card.querySelector('.download-action');
-                downloadBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    downloadDocument(doc);
-                });
-                
                 grid.appendChild(card);
+            });
+            
+            // Добавляем обработчики событий после рендеринга
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const url = btn.dataset.url;
+                    const name = btn.dataset.name;
+                    downloadDocument(url, name);
+                });
+            });
+            
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const url = btn.dataset.url;
+                    const name = btn.dataset.name;
+                    shareDocument(url, name);
+                });
             });
         }
 
-        // Получение типа файла
-        function getFileType(filename) {
-            const ext = filename.split('.').pop().toLowerCase();
-            const types = {
-                'pdf': 'PDF',
-                'docx': 'DOCX',
-                'doc': 'DOC',
-                'xlsx': 'XLSX',
-                'xls': 'XLS',
-                'pptx': 'PPTX',
-                'ppt': 'PPT'
-            };
-            return types[ext] || ext.toUpperCase();
-        }
-
-        // Открытие деталей документа
-        function openDocumentDetail(doc) {
-            currentDocument = doc;
-            
-            document.getElementById('detailTitle').textContent = doc.name;
-            document.getElementById('detailType').textContent = getFileType(doc.name);
-            document.getElementById('detailSize').textContent = doc.size;
-            document.getElementById('detailDate').textContent = doc.modified;
-            document.getElementById('detailDescription').textContent = doc.description || 'Описание отсутствует';
-            
-            document.getElementById('detailDownloadCount').textContent = `📥 Загружен: ${getDownloadCount(doc.url)} раз`;
-            document.getElementById('detailShareCount').textContent = `📤 Отправлен: ${getShareCount(doc.url)} раз`;
-            
-            document.getElementById('documentDetail').classList.add('active');
-        }
-
         // Скачивание документа
-        function downloadDocument(doc) {
-            incrementDownloadCount(doc.url);
-            showNotification(`📥 Скачивание: ${doc.name}`);
+        function downloadDocument(url, name) {
+            if (!url) {
+                showNotification('Ошибка: URL документа не указан', 'error');
+                return;
+            }
+            
+            incrementDownloadCount(url);
+            showNotification(`Скачивание: ${name}`, 'success');
             
             // Открываем файл в новой вкладке
-            window.open(doc.url, '_blank');
+            window.open(url, '_blank');
             
             // Обновляем отображение
-            renderDocuments();
-            if (currentDocument && currentDocument.url === doc.url) {
-                document.getElementById('detailDownloadCount').textContent = `📥 Загружен: ${getDownloadCount(doc.url)} раз`;
-            }
+            setTimeout(() => renderDocuments(), 500);
         }
 
         // Поделиться документом
-        async function shareDocument(doc) {
-            showNotification(`⏳ Подготовка к отправке: ${doc.name}`);
+        async function shareDocument(url, name) {
+            if (!url) {
+                showNotification('Ошибка: URL документа не указан', 'error');
+                return;
+            }
+            
+            showNotification(`Подготовка к отправке: ${name}`);
             
             try {
-                const response = await fetch(doc.url);
-                if (!response.ok) throw new Error('Ошибка загрузки файла');
-                
-                const blob = await response.blob();
-                const file = new File([blob], doc.name, { type: blob.type });
-                
                 // Пробуем использовать Web Share API
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                if (navigator.share) {
                     await navigator.share({
-                        title: doc.name,
-                        files: [file]
+                        title: name,
+                        url: url
                     });
-                    incrementShareCount(doc.url);
-                    showNotification(`✅ Документ отправлен: ${doc.name}`);
+                    incrementShareCount(url);
+                    showNotification(`Документ отправлен: ${name}`, 'success');
                 } 
                 // Пробуем использовать Telegram Share
-                else if (tg && tg.share) {
-                    tg.share(doc.url);
-                    incrementShareCount(doc.url);
-                    showNotification(`✅ Открыто меню отправки Telegram`);
+                else if (window.Telegram && Telegram.WebApp && Telegram.WebApp.share) {
+                    Telegram.WebApp.share(url);
+                    incrementShareCount(url);
+                    showNotification(`Открыто меню отправки Telegram`, 'success');
                 }
                 // Fallback - копируем ссылку
                 else {
-                    await navigator.clipboard.writeText(doc.url);
-                    incrementShareCount(doc.url);
-                    showNotification(`🔗 Ссылка скопирована в буфер`);
+                    await navigator.clipboard.writeText(url);
+                    incrementShareCount(url);
+                    showNotification(`Ссылка скопирована в буфер`, 'success');
                 }
                 
             } catch (error) {
                 console.error('Ошибка отправки:', error);
-                showNotification('❌ Ошибка при отправке документа', true);
+                if (error.name !== 'AbortError') {
+                    // Если не отменено пользователем, открываем в новой вкладке
+                    window.open(url, '_blank');
+                    incrementShareCount(url);
+                    showNotification(`Документ открыт в новой вкладке`, 'info');
+                }
             }
             
             // Обновляем отображение
-            renderDocuments();
-            if (currentDocument && currentDocument.url === doc.url) {
-                document.getElementById('detailShareCount').textContent = `📤 Отправлен: ${getDownloadCount(doc.url)} раз`;
-            }
+            setTimeout(() => renderDocuments(), 500);
         }
 
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
             // Настройка Telegram Web App
-            if (tg) {
-                tg.expand();
-                tg.ready();
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.expand();
+                Telegram.WebApp.ready();
                 
                 // Установка темы
-                if (tg.colorScheme === 'dark') {
+                if (Telegram.WebApp.colorScheme === 'dark') {
                     document.documentElement.style.setProperty('--bg-color', '#1c1c1d');
                     document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
                     document.documentElement.style.setProperty('--text-color', '#ffffff');
@@ -775,8 +799,8 @@
                 }
                 
                 // Установка информации о пользователе
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    const user = tg.initDataUnsafe.user;
+                if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+                    const user = Telegram.WebApp.initDataUnsafe.user;
                     document.getElementById('userAvatar').textContent = user.first_name ? user.first_name[0] : 'U';
                 }
             }
@@ -786,23 +810,6 @@
             loadFiles();
             
             // Обработчики событий
-            document.getElementById('closeDetail').addEventListener('click', function() {
-                document.getElementById('documentDetail').classList.remove('active');
-            });
-            
-            document.getElementById('downloadBtn').addEventListener('click', function() {
-                if (currentDocument) {
-                    downloadDocument(currentDocument);
-                }
-            });
-            
-            document.getElementById('shareBtn').addEventListener('click', function() {
-                if (currentDocument) {
-                    shareDocument(currentDocument);
-                }
-            });
-            
-            // Поиск
             document.getElementById('searchInput').addEventListener('input', function() {
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(renderDocuments, 300);
@@ -817,8 +824,8 @@
                 });
             });
             
-            // Автообновление каждые 5 минут
-            setInterval(loadFiles, 5 * 60 * 1000);
+            // Автообновление каждые 10 минут
+            setInterval(loadFiles, 10 * 60 * 1000);
         });
     </script>
 </body>
