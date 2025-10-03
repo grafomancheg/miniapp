@@ -1,16 +1,9 @@
 [
   {
-    "name": "1.txt",
-    "url": "https://raw.githubusercontent.com/grafomancheg/miniapp/main/files/1.txt",
-    "size": "1.0 B",
-    "modified": "03.10.2025",
-    "description": "1"
-  },
-  {
-    "name": "Возврат подарочной карты для абд и кассиров (1).pdf",
-    "url": "https://raw.githubusercontent.com/grafomancheg/miniapp/main/files/Возврат подарочной карты для абд и кассиров (1).pdf",
+    "name": "Возврат подарочной карты для абд и кассиров.pdf",
+    "url": "https://raw.githubusercontent.com/grafomancheg/hc-bot/main/files/Возврат подарочной карты для абд и кассиров.pdf",
     "size": "710.7 KB",
-    "modified": "03.10.2025",
-    "description": "Возврат подарочной карты для абд и кассиров (1)"
+    "modified": "30.09.2025",
+    "description": "Возврат подарочной карты для абд и кассиров"
   }
 ]
