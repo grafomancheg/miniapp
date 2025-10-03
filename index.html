@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 База документов</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary-color: #2F5496;
+            --primary-dark: #1E3A5F;
+            --secondary-color: #217346;
+            --accent-color: #D83B01;
+            --text-dark: #323130;
+            --text-light: #605E5C;
+            --bg-white: #FFFFFF;
+            --bg-light: #F3F2F1;
+            --border-color: #D2D0CE;
+            --border-radius: 6px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.12);
+            --transition: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 16px;
+            background: linear-gradient(135deg, #F3F2F1 0%, #E1DFDD 100%);
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .main-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        .file-item {
+            background: var(--bg-white);
+            margin: 12px 0;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary-color);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .file-item:hover {
+            box-shadow: var(--shadow);
+            border-left-color: var(--accent-color);
+        }
+
+        .file-name {
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-info {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 12px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .download-count {
+            color: var(--accent-color);
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #FFF5F5;
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: 1px solid #FFE2E2;
+        }
+
+        .share-count {
+            color: var(--secondary-color);
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #F0FFF4;
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: 1px solid #C6F6D5;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .download-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .share-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .share-btn:hover {
+            background: #1A5C38;
+        }
+
+        .refresh-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .search-container {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            box-sizing: border-box;
+            background: var(--bg-white);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(47, 84, 150, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .total-stats {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .total-downloads {
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .total-shares {
+            background: var(--secondary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .error {
+            background: #FEF2F2;
+            color: #991B1B;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+            text-align: center;
+            border-left: 3px solid #DC2626;
+            border: 1px solid #FECACA;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .results-count {
+            margin-bottom: 12px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .info-box {
+            background: #F0F7FF;
+            border: 1px solid #DBEAFE;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .info-title {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .info-text {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .file-description {
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 10px 0;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            border-left: 2px solid var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .main-title {
+                font-size: 1.3rem;
+            }
+            .file-item {
+                padding: 12px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .download-btn, .share-btn {
+                min-width: 100%;
+            }
+            body {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">📋 База документов</h1>
+            <div class="subtitle">Корпоративные материалы и документация</div>
+            <div class="total-stats">
+                <div id="total-downloads" class="total-downloads">
+                    📥 Загрузок: 0
+                </div>
+                <div id="total-shares" class="total-shares">
+                    📤 Отправок: 0
+                </div>
+            </div>
+            <div class="info-box">
+                <div class="info-title">💡 Отправка документа</div>
+                <div class="info-text">
+                    1. Нажмите "Отправить документ"<br>
+                    2. Выберите чат в меню<br>
+                    3. Документ будет отправлен
+                </div>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 Поиск документов по названию или описанию...">
+            <button id="clear-search" class="clear-search">✕</button>
+            <span class="search-icon">🔍</span>
+        </div>
+        <div id="results-count" class="results-count"></div>
+        <button class="refresh-btn" onclick="loadFiles()">
+            🔄 Обновить список
+        </button>
+        <div id="files-container">
+            <div class="loading">Загрузка документов...</div>
+        </div>
+    </div>
+    <div id="popup-overlay" class="popup-overlay" style="display: none;">
+        <div class="popup">
+            <h3 id="popup-title" style="font-size: 1rem; margin-bottom: 12px;">⏳ Отправка документа</h3>
+            <p id="popup-message" style="font-size: 0.85rem; color: var(--text-light);">Подготовка документа для отправки...</p>
+            <button id="popup-close" class="download-btn" style="margin-top: 16px; min-width: 80px;">OK</button>
+        </div>
+    </div>
+    <script>
+        let allFiles = [];
+        let downloadStats = {};
+        let shareStats = {};
+
+        function loadStats() {
+            const savedDownloadStats = localStorage.getItem('fileDownloadStats');
+            const savedShareStats = localStorage.getItem('fileShareStats');
+            if (savedDownloadStats) downloadStats = JSON.parse(savedDownloadStats);
+            if (savedShareStats) shareStats = JSON.parse(savedShareStats);
+            updateTotalStats();
+        }
+
+        function saveDownloadStats() {
+            localStorage.setItem('fileDownloadStats', JSON.stringify(downloadStats));
+            updateTotalStats();
+        }
+
+        function saveShareStats() {
+            localStorage.setItem('fileShareStats', JSON.stringify(shareStats));
+            updateTotalStats();
+        }
+
+        function updateTotalStats() {
+            const totalDownloads = Object.values(downloadStats).reduce((sum, count) => sum + count, 0);
+            const totalShares = Object.values(shareStats).reduce((sum, count) => sum + count, 0);
+            document.getElementById('total-downloads').textContent = `📥 Загрузок: ${totalDownloads}`;
+            document.getElementById('total-shares').textContent = `📤 Отправок: ${totalShares}`;
+        }
+
+        function getDownloadCount(fileUrl) { return downloadStats[fileUrl] || 0; }
+        function getShareCount(fileUrl) { return shareStats[fileUrl] || 0; }
+
+        function incrementDownloadCount(fileUrl) {
+            downloadStats[fileUrl] = (downloadStats[fileUrl] || 0) + 1;
+            saveDownloadStats();
+        }
+
+        function incrementShareCount(fileUrl) {
+            shareStats[fileUrl] = (shareStats[fileUrl] || 0) + 1;
+            saveShareStats();
+        }
+
+        function showPopup(title, message) {
+            document.getElementById('popup-title').textContent = title;
+            document.getElementById('popup-message').textContent = message;
+            document.getElementById('popup-overlay').style.display = 'flex';
+        }
+
+        function hidePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+        }
+
+        async function loadFiles() {
+            const container = document.getElementById('files-container');
+            container.innerHTML = '<div class="loading">🔄 Загрузка документов...</div>';
+            
+            try {
+                const response = await fetch('./file-list.json?t=' + Date.now());
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                allFiles = await response.json();
+                filterFiles();
+            } catch (error) {
+                console.error('Ошибка загрузки документов:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Ошибка загрузки списка документов</strong>
+                        <p style="margin: 8px 0;">Проверьте подключение к интернету</p>
+                        <button class="refresh-btn" onclick="loadFiles()" style="margin-top: 12px;">
+                            🔄 Попробовать снова
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function filterFiles() {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            const container = document.getElementById('files-container');
+            const resultsCount = document.getElementById('results-count');
+            const clearButton = document.getElementById('clear-search');
+            
+            clearButton.style.display = searchQuery ? 'block' : 'none';
+
+            if (allFiles.length === 0) {
+                container.innerHTML = '<div class="file-item">📭 Документы не найдены</div>';
+                resultsCount.textContent = '';
+                return;
+            }
+
+            let filteredFiles = searchQuery ?
+                allFiles.filter(file => {
+                    const nameMatch = file.name.toLowerCase().includes(searchQuery);
+                    const descMatch = file.description && file.description.toLowerCase().includes(searchQuery);
+                    return nameMatch || descMatch;
+                }) :
+                allFiles;
+
+            resultsCount.textContent = searchQuery ?
+                `Найдено документов: ${filteredFiles.length} из ${allFiles.length}` :
+                `Всего документов: ${filteredFiles.length}`;
+
+            container.innerHTML = '';
+
+            if (filteredFiles.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3 style="margin-bottom: 8px;">🔍 Документы не найдены</h3>
+                        <p>Попробуйте изменить поисковый запрос</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredFiles.forEach(file => {
+                const fileElement = document.createElement('div');
+                fileElement.className = 'file-item';
+                
+                const name = document.createElement('h3');
+                name.className = 'file-name';
+                name.innerHTML = `📄 ${file.name}`;
+
+                const size = document.createElement('div');
+                size.className = 'file-info';
+                size.innerHTML = `📏 <strong>Размер:</strong> ${file.size}`;
+
+                const modified = document.createElement('div');
+                modified.className = 'file-info';
+                modified.innerHTML = `📅 <strong>Изменен:</strong> ${file.modified}`;
+
+                const statsContainer = document.createElement('div');
+                statsContainer.className = 'stats-container';
+
+                const downloadCount = document.createElement('div');
+                downloadCount.className = 'download-count';
+                downloadCount.innerHTML = `📥 Загружен: ${getDownloadCount(file.url)} раз`;
+
+                const shareCount = document.createElement('div');
+                shareCount.className = 'share-count';
+                shareCount.innerHTML = `📤 Отправлен: ${getShareCount(file.url)} раз`;
+
+                statsContainer.appendChild(downloadCount);
+                statsContainer.appendChild(shareCount);
+
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'button-group';
+
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-btn';
+                downloadBtn.innerHTML = '📥 Скачать';
+                downloadBtn.onclick = () => downloadFile(file.url, file.name);
+
+                const shareBtn = document.createElement('button');
+                shareBtn.className = 'share-btn';
+                shareBtn.innerHTML = '📤 Отправить';
+                shareBtn.onclick = () => shareFile(file.url, file.name);
+
+                buttonGroup.appendChild(downloadBtn);
+                buttonGroup.appendChild(shareBtn);
+
+                fileElement.appendChild(name);
+                fileElement.appendChild(size);
+                fileElement.appendChild(modified);
+                fileElement.appendChild(statsContainer);
+
+                if (file.description) {
+                    const desc = document.createElement('div');
+                    desc.className = 'file-description';
+                    desc.textContent = file.description;
+                    fileElement.appendChild(desc);
+                }
+
+                fileElement.appendChild(buttonGroup);
+                container.appendChild(fileElement);
+            });
+        }
+
+        function downloadFile(url, fileName) {
+            const fullUrl = url.startsWith('http') ? url : window.location.origin + '/' + url;
+            incrementDownloadCount(url);
+            filterFiles();
+            window.open(fullUrl, '_blank');
+            
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.showPopup({
+                    title: '📥 Загрузка начата',
+                    message: 'Документ будет загружен на устройство',
+                    buttons: [{ type: 'ok' }]
+                });
+            } else {
+                showPopup('📥 Загрузка начата', 'Документ будет загружен на устройство');
+            }
+        }
+
+        async function shareFile(url, fileName) {
+            const fullUrl = url.startsWith('http') ? url : window.location.origin + '/' + url;
+            showPopup('⏳ Подготовка', 'Документ готовится к отправке...');
+            
+            try {
+                const response = await fetch(fullUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const blob = await response.blob();
+                const file = new File([blob], fileName, { type: blob.type });
+                
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ title: fileName, files: [file] });
+                    incrementShareCount(url);
+                    filterFiles();
+                    showPopup('✅ Успешно', 'Документ отправлен через меню общего доступа');
+                } else if (window.Telegram && Telegram.WebApp && Telegram.WebApp.shareFile) {
+                    Telegram.WebApp.shareFile(file);
+                    incrementShareCount(url);
+                    filterFiles();
+                    showPopup('✅ Готово', 'Выберите чат в открывшемся меню Telegram');
+                } else {
+                    await navigator.clipboard.writeText(fullUrl);
+                    incrementShareCount(url);
+                    filterFiles();
+                    showPopup('🔗 Ссылка скопирована', `Ссылка на документ "${fileName}" скопирована в буфер обмена`);
+                }
+            } catch (error) {
+                console.error('Ошибка отправки документа:', error);
+                showPopup('📎 Открыть ссылку', 'Нажмите OK чтобы открыть документ');
+                setTimeout(() => window.open(fullUrl, '_blank'), 500);
+            }
+        }
+
+        if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.expand();
+            Telegram.WebApp.ready();
+            Telegram.WebApp.setHeaderColor('#2F5496');
+            Telegram.WebApp.setBackgroundColor('#F3F2F1');
+            Telegram.WebApp.BackButton.show();
+            Telegram.WebApp.BackButton.onClick(() => Telegram.WebApp.close());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadFiles();
+            
+            const searchInput = document.getElementById('search-input');
+            const clearButton = document.getElementById('clear-search');
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(filterFiles, 300);
+            });
+            
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                filterFiles();
+                searchInput.focus();
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') filterFiles();
+            });
+            
+            document.getElementById('popup-close').addEventListener('click', hidePopup);
+            document.getElementById('popup-overlay').addEventListener('click', function(e) {
+                if (e.target === this) hidePopup();
+            });
+        });
+
+        setInterval(loadFiles, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
