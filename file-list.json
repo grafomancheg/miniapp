@@ -1,23 +1,16 @@
 [
   {
-    "name": "Возврат подарочной карты для абд и кассиров.pdf",
-    "url": "https://raw.githubusercontent.com/grafomancheg/hc-bot/main/files/Возврат подарочной карты для абд и кассиров.pdf",
+    "name": "1.txt",
+    "url": "https://raw.githubusercontent.com/grafomancheg/miniapp/main/files/1.txt",
+    "size": "1.0 B",
+    "modified": "03.10.2025",
+    "description": "1"
+  },
+  {
+    "name": "Возврат подарочной карты для абд и кассиров (1).pdf",
+    "url": "https://raw.githubusercontent.com/grafomancheg/miniapp/main/files/Возврат подарочной карты для абд и кассиров (1).pdf",
     "size": "710.7 KB",
-    "modified": "30.09.2025",
-    "description": "Возврат подарочной карты для абд и кассиров"
-  },
-  {
-    "name": "TOP 20 New York Affairs.pdf",
-    "url": "https://raw.githubusercontent.com/grafomancheg/hc-bot/main/files/TOP 20 New York Affairs.pdf",
-    "size": "1.2 MB",
-    "modified": "30.09.2025",
-    "description": "TOP 20 New York Affairs"
-  },
-  {
-    "name": "TOP 20 Urban Poetry.pdf",
-    "url": "https://raw.githubusercontent.com/grafomancheg/hc-bot/main/files/TOP 20 Urban Poetry.pdf",
-    "size": "1.3 MB",
-    "modified": "30.09.2025",
-    "description": "TOP 20 Urban Poetry"
+    "modified": "03.10.2025",
+    "description": "Возврат подарочной карты для абд и кассиров (1)"
   }
 ]
